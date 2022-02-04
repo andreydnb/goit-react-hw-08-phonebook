@@ -19,7 +19,7 @@ function Navigation() {
                     className={s.link}
                     activeClassName={s.activeLink}
                 >
-                    contacts
+                    Contacts
                 </NavLink>
             )}
         </nav>

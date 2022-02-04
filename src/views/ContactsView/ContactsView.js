@@ -3,13 +3,13 @@ import { useDispatch } from 'react-redux';
 import ContactList from '../../components/ContactList';
 import Form from '../../components/Form';
 import Filter from '../../components/Filter';
-import { contactsOperations } from '../../redux/contacts';
+import {fetchContacts} from '../../redux/contacts/contacts.operations';
 import s from './ContactsView.module.css';
 
 export default function ContactsView() {
   const dispatch = useDispatch();
 
-  useEffect(() => dispatch(contactsOperations.fetchContacts()), [dispatch]);
+  useEffect(() => dispatch(fetchContacts()), [dispatch]);
 
   return (
     <div className={s.wrapper}>
