@@ -101,4 +101,4 @@ export const getCurrentUser = () => async (dispatch, getState) => {
         token.unset();
         toast.warn('Authorization timed out! Please authenticate again!');
     }
-};
+}

@@ -30,7 +30,7 @@ const HomeView = () => {
                     transition="transition"
                     variants={variants}
                 >
-                    Now you will exactly not forget your contacts!
+                    We will help you not to lose your contacts
                 </motion.p>
             </AnimatePresence>
             {!isLoggedIn && (

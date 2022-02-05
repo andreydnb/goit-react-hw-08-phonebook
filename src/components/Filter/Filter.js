@@ -1,32 +1,37 @@
-import { connect } from 'react-redux';
-import * as contactsActions from '../../redux/contacts/contacts.actions';
-import PropTypes from 'prop-types';
+import { useSelector, useDispatch } from 'react-redux';
+import { contactsActions, contactsSelectors } from '../../redux/contacts';
+import { motion, AnimatePresence } from 'framer-motion';
+import { variants } from '../../utils/motionVar';
 import s from './filter.module.css';
 
-function Filter({ value, onChange }) {
+function Filter() {
+  const dispatch = useDispatch();
+  const filter = useSelector(contactsSelectors.getFilter);
+  const contacts = useSelector(contactsSelectors.getContacts);
+
   return (
-    <label className={s.label}>
-      Find contacts by name
-      <input
-        type="text"
-        className={s.input}
-        value={value}
-        onChange={onChange}
-      />
-    </label>
+    <>
+      {contacts.length > 0 && (
+        <AnimatePresence>
+          <label className={s.label}>
+            <motion.input
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              transition="transition"
+              variants={variants}
+              className={s.input}
+              type="text"
+              value={filter}
+              onChange={e =>
+                dispatch(contactsActions.filterContact(e.target.value))
+              }
+            />
+          </label>
+        </AnimatePresence>
+      )}
+    </>
   );
 }
-Filter.propTypes = {
-  onChange: PropTypes.func.isRequired,
-  value: PropTypes.string.isRequired,
-};
 
-const mapStateToProps = state => ({
-  value: state.contacts.filter,
-});
-
-const mapDispatchToProps = dispatch => ({
-  onChange: event => dispatch(contactsActions.changeFilter(event.target.value)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Filter);
+export default Filter;

@@ -1,33 +1,74 @@
 
-import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-// import * as actions from './contacts-actions';
+import {
+  fetchContactsRequest,
+  fetchContactsSuccess,
+  fetchContactsError,
+  addContactRequest,
+  addContactSuccess,
+  addContactError,
+  deleteContactRequest,
+  deleteContactSuccess,
+  deleteContactError,
+} from './contacts.actions';
+import { toast } from 'react-toastify';
 
+export const fetchContacts = () => dispatch => {
+  dispatch(fetchContactsRequest());
 
-export const fetchContacts = createAsyncThunk(
-  'contacts/fetchContacts',
-  async () => {
-    const { data } = await axios.get('/contacts');
-    return data;
-  }
-);
+  axios
+    .get('/contacts')
+    .then(({ data }) => dispatch(fetchContactsSuccess(data)))
+    .catch(error => {
+      dispatch(fetchContactsError(error));
 
-export const deleteContact = createAsyncThunk(
-  'contacts/deleteContact',
-  async contactId => {
-    const {
-      data: { id },
-    } = await axios.delete(`/contacts/${contactId}`);
-    return id;
-  }
-);
+      if (error.response.status === 404) {
+        toast.info("There is no such user's collection!");
+      } else if (error.response.status === 500) {
+        toast.error('Oops! Server error! Please try later!');
+      } else {
+        toast.error('Something went wrong! Please reload the page!');
+      }
+    });
+};
 
-export const addContact = createAsyncThunk(
-  'contacts/addContact',
-  async ({ name, number: phone }) => {
-    const contact = { name, phone };
+export const addContact = (name, number) => dispatch => {
+  const contact = {
+    name,
+    number,
+  };
 
-    const { data } = await axios.post('/contacts', contact);
-    return data;
-  }
-);
+  dispatch(addContactRequest());
+
+  axios
+    .post('/contacts', contact)
+    .then(({ data }) => dispatch(addContactSuccess(data)))
+    .catch(error => {
+      dispatch(addContactError(error));
+
+      if (error.response.status === 400) {
+        toast.error('Contact creation error!');
+      } else {
+        toast.error('Something went wrong! Please reload the page!');
+      }
+    });
+};
+
+export const deleteContact = contactId => dispatch => {
+  dispatch(deleteContactRequest());
+
+  axios
+    .delete(`/contacts/${contactId}`)
+    .then(() => dispatch(deleteContactSuccess(contactId)))
+    .catch(error => {
+      dispatch(deleteContactError(error));
+
+      if (error.response.status === 404) {
+        toast.info("There is no such user's collection!");
+      } else if (error.response.status === 500) {
+        toast.error('Oops! Server error! Please try later!');
+      } else {
+        toast.error('Something went wrong! Please reload the page!');
+      }
+    });
+};

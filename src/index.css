@@ -14,8 +14,6 @@ body {
   font-family: "Roboto", sans-serif;
   line-height: 1.5;
   color: var(--primaryTextColor);
-  padding-top: 30px;
-  padding-bottom: 30px;
 }
 
 img {

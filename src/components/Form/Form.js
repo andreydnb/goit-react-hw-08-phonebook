@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import { connect, useSelector } from 'react-redux';
-// import contactsActions from '../../redux/contacts/contacts-actions';
-import { addContact } from '../../redux/contacts/contacts.operations';
-import { getContacts } from '../../redux/contacts/contacts.selectors';
+import { useSelector,useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import s from './contactForm.module.css';
+import s from './Form.module.css';
+import { toast } from 'react-toastify';
+import { contactsOperations, contactsSelectors } from '../../redux/contacts';
+import Button from '@material-ui/core/Button';
+import LoaderComponent from '../LoaderComponent';
 
-function Form({ onSubmit }) {
-  const contacts = useSelector(getContacts);
+function Form() {
+   const dispatch = useDispatch();
+  const contacts = useSelector(contactsSelectors.getContacts);
+  const isLoading = useSelector(contactsSelectors.getLoading);
 
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
@@ -31,10 +34,11 @@ function Form({ onSubmit }) {
     e.preventDefault();
 
     if (contacts.some(contact => contact.name === name)) {
-      return alert(`${name} is already in contacts!`);
+      return toast(`${name} is already in contacts!`);
+    } else {
+      dispatch(contactsOperations.addContact(name, number));
     }
 
-    onSubmit({ name, number });
 
     reset();
   };
@@ -72,9 +76,18 @@ function Form({ onSubmit }) {
           onChange={handleInputChange}
         />
       </label>
-      <button type="submit" className={s.button}>
-        Add contact
-      </button>
+      {!isLoading && (
+        <Button
+          variant="contained"
+          color="secondary"
+          size="large"
+          type="submit"
+        >
+          Add contact
+        </Button>
+      )}
+
+      {isLoading && <LoaderComponent />}
     </form>
   );
 }
@@ -82,8 +95,5 @@ Form.propTypes = {
   onSubmit: PropTypes.func.isRequired,
 };
 
-const mapDispatchToProps = dispatch => ({
-  onSubmit: text => dispatch(addContact(text)),
-});
 
-export default connect(null, mapDispatchToProps)(Form);
+export default Form;

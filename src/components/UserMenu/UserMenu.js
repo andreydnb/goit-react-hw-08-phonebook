@@ -16,12 +16,12 @@ export default function UserMenu() {
                 width="32"
                 className={s.avatar}
             />
-            <span className={s.name}>Welcome, {name}</span>
+            <span className={s.name}>{name}</span>
             <Button
                 color="secondary"
                 variant="outlined"
                 type="button"
-                onClick={() => dispatch(authOperations.logOut)}>
+                onClick={() => dispatch(authOperations.logOut())}>
                 Log Out
             </Button>
         </div>
